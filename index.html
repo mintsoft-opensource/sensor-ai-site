@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>계측 AI 모니터링 — 계측 데이터를 로컬 AI 로 분석하는 설치형 시스템</title>
   <meta name="description" content="계측 장비가 남긴 시계열 기록을 등록하면 추이, 알람, 이상 구간, 건강 점수, 7일 예측을 보여주는 설치형 모니터링 시스템. 머신러닝 분석은 설치한 서버 안의 로컬 AI 가 수행하고 데이터는 밖으로 나가지 않습니다.">
-  <meta name="keywords" content="계측 모니터링, 계측 데이터 분석, 이상 탐지, 예지 보전, 로컬 AI, 온프레미스 AI, 머신러닝, 시계열 분석, 설치형 모니터링, DuckDB, 폐쇄망">
+  <meta name="keywords" content="계측 모니터링, 계측 데이터 분석, 이상 탐지, 예지 보전, 로컬 AI, 온프레미스 AI, 머신러닝, 시계열 분석, 설치형 모니터링, 폐쇄망">
   <meta name="author" content="MintSoft">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <link rel="canonical" href="https://sensor-ai.mint-soft.com/">
@@ -16,7 +16,7 @@
   <meta property="og:locale" content="ko_KR">
   <meta property="og:url" content="https://sensor-ai.mint-soft.com/">
   <meta property="og:title" content="계측 AI 모니터링 — 계측 데이터를 로컬 AI 로 분석하는 설치형 시스템">
-  <meta property="og:description" content="계측 기록을 등록하면 로컬 AI 가 이상 구간, 건강 점수, 7일 예측을 만듭니다. 서버 한 대에 Docker 로 설치합니다.">
+  <meta property="og:description" content="계측 기록을 등록하면 로컬 AI 가 이상 구간, 건강 점수, 7일 예측을 만듭니다. 서버 한 대에 설치합니다.">
   <meta property="og:image" content="https://sensor-ai.mint-soft.com/assets/og.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
@@ -74,7 +74,7 @@
       "url": "https://sensor-ai.mint-soft.com/",
       "applicationCategory": "BusinessApplication",
       "applicationSubCategory": "계측 장비 모니터링 · 이상 탐지",
-      "operatingSystem": "Linux (Docker)",
+      "operatingSystem": "Linux",
       "inLanguage": "ko-KR",
       "featureList": [
         "현황판과 추이 차트",
@@ -109,7 +109,7 @@
           "name": "계측 AI 모니터링은 무엇인가요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "계측 장비가 남긴 시계열 기록을 등록하면 추이와 알람을 정리하고, 서버 안의 로컬 AI 가 머신러닝으로 이상 구간을 찾아 장비 상태를 점수로 보여주는 설치형 모니터링 시스템입니다. 서버 한 대에 Docker 로 설치합니다."
+            "text": "계측 장비가 남긴 시계열 기록을 등록하면 추이와 알람을 정리하고, 서버 안의 로컬 AI 가 머신러닝으로 이상 구간을 찾아 장비 상태를 점수로 보여주는 설치형 모니터링 시스템입니다. 서버 한 대에 설치합니다."
           }
         },
         {
@@ -149,7 +149,7 @@
           "name": "데이터가 많아져도 빠른가요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "측정 데이터를 컬럼 저장 형식(Parquet)으로 장비별·날짜별로 나눠 저장하고 DuckDB 로 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다. 시연용 데이터에서 544만 행 집계가 0.1초, 45일 추이 조회가 0.05초였습니다(12코어 PC 기준)."
+            "text": "측정 데이터를 장비별·날짜별로 나눠 압축 저장하고 분석 전용 엔진으로 필요한 구간만 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다. 시연용 데이터에서 544만 행 집계가 0.1초, 45일 추이 조회가 0.05초였습니다(12코어 PC 기준)."
           }
         },
         {
@@ -165,7 +165,7 @@
           "name": "설치는 어떻게 하나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Docker 가 도는 64비트 Linux 서버에 설정 파일을 만들고 docker compose up -d --build 를 한 번 실행합니다. 인터넷이 없는 곳에는 이미지를 파일로 묶어 옮겨 설치합니다. 백업과 복원 스크립트가 함께 들어 있습니다."
+            "text": "리눅스 서버 한 대에 설정 파일을 만들고 설치 명령을 한 번 실행합니다. 인터넷이 없는 곳에는 설치 묶음을 파일로 옮겨 설치합니다. 백업과 복원 스크립트가 함께 들어 있습니다."
           }
         }
       ]
@@ -410,8 +410,8 @@
             <li><span>모니터링</span>현황판 · 추이 · 알람 · 장비 비교</li>
             <li><span>로컬 AI</span>이상 탐지 · 상태 진단 · 7일 예측</li>
             <li><span>대상</span>시계열 기록을 남기는 계측 장비</li>
-            <li><span>속도</span>DuckDB 로 544만 행 집계 0.1초</li>
-            <li><span>설치</span>Docker 로 서버 한 대, GPU 불필요</li>
+            <li><span>속도</span>544만 행 집계 0.1초</li>
+            <li><span>설치</span>서버 한 대, GPU 불필요</li>
           </ul>
         </div>
         <div class="hero-shot rise" style="--d: 0.38s">
@@ -613,12 +613,12 @@
         <div class="chapter-head">
           <p class="eyebrow"><b>05</b>속도와 용량</p>
           <h2>데이터가 쌓여도<br>조회는 빠르게 유지됩니다</h2>
-          <p>측정 데이터는 컬럼 저장 형식(Parquet)으로 쌓고 분석용 엔진 DuckDB 로 읽습니다. 필요한 열과 필요한 날짜만 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다.</p>
+          <p>측정 데이터는 분석에 맞춘 압축 형식으로 쌓고 분석 전용 엔진으로 읽습니다. 필요한 항목과 필요한 날짜만 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다.</p>
         </div>
 
         <div class="stats">
           <div class="stat"><p class="k">45일 추이 조회</p><p class="v">0.05<small>초</small></p><p class="d">장비 1대의 45일치 추이 차트를 여는 데 걸린 시간</p></div>
-          <div class="stat"><p class="k">544만 행 집계</p><p class="v">0.1<small>초</small></p><p class="d">초 단위 원본 전체를 DuckDB 로 한 번에 훑어 집계</p></div>
+          <div class="stat"><p class="k">544만 행 집계</p><p class="v">0.1<small>초</small></p><p class="d">초 단위 원본 전체를 한 번에 훑어 집계</p></div>
           <div class="stat"><p class="k">78만 행 적재</p><p class="v">8<small>초</small></p><p class="d">45일치 기록 파일 하나를 올려 저장과 집계까지 마침</p></div>
           <div class="stat"><p class="k">AI 분석</p><p class="v">16<small>초</small></p><p class="d">장비 1대의 45일치를 학습하고 판정·예측까지 (중앙값)</p></div>
         </div>
@@ -626,7 +626,7 @@
 
         <div class="cards two" style="margin-top: clamp(32px, 5vw, 56px)">
           <div class="card">
-            <span class="n">DuckDB + Parquet</span>
+            <span class="n">분석 전용 저장 구조</span>
             <h3>빠른 속도를 유지하는 방법</h3>
             <p>기록을 장비별·날짜별로 나눠 압축 저장하고, 조회할 때는 해당 구간의 파일만 읽습니다. 등록할 때 1분 단위 집계를 미리 만들어 두어, 긴 기간의 추이도 원본을 다시 훑지 않고 그립니다.</p>
           </div>
@@ -656,26 +656,20 @@
         <div class="chapter-head">
           <p class="eyebrow"><b>06</b>설치와 운영</p>
           <h2>서버 한 대, 명령 한 번</h2>
-          <p>Docker 가 도는 64비트 Linux 서버에 설치합니다.</p>
+          <p>리눅스 서버 한 대에 설치합니다. 분석용 서버를 따로 두지 않습니다.</p>
         </div>
         <div class="install">
-          <div class="term" aria-label="설치 명령 예시">
-<pre><span class="c"># 1. 설정 파일을 만들고 비밀번호와 데이터 폴더를 적는다</span>
-<span class="p">$</span> cp .env.example .env
-
-<span class="c"># 2. 전체 스택 설치와 기동</span>
-<span class="p">$</span> docker compose up -d --build
-
-<span class="c"># 평소 운영</span>
-<span class="p">$</span> scripts/backup.sh /mnt/backup
-<span class="p">$</span> scripts/restore.sh &lt;db dump&gt; &lt;data tar.gz&gt;
-<span class="p">$</span> docker compose up -d --build   <span class="c"># 업데이트</span></pre>
-          </div>
+          <ol class="flow">
+            <li><span><b>서버 준비</b> — 리눅스 서버 한 대를 준비합니다. GPU 는 필요 없습니다.</span></li>
+            <li><span><b>설정</b> — 설정 파일에 비밀번호와 데이터를 둘 위치를 적습니다.</span></li>
+            <li><span><b>설치</b> — 설치 명령을 한 번 실행하면 전체가 올라옵니다.</span></li>
+            <li><span><b>시작</b> — 브라우저로 접속해 관리자 계정을 만들고 기록 파일을 등록합니다.</span></li>
+          </ol>
           <div class="modes">
             <div><h3>데이터는 서버 안에만</h3><p>등록한 파일과 분석 결과는 설치한 서버의 디스크에 저장됩니다.</p></div>
-            <div><h3>폐쇄망 설치</h3><p>인터넷이 되는 PC 에서 이미지를 파일로 묶어 옮기면, 설치할 서버는 인터넷 없이 올라옵니다.</p></div>
-            <div><h3>저장 위치 지정</h3><p>측정 데이터와 데이터베이스를 둘 폴더를 <code>.env</code> 에서 정합니다. 용량이 큰 디스크를 따로 붙여 쓸 수 있습니다.</p></div>
-            <div><h3>업데이트와 백업</h3><p>업데이트하면 데이터베이스 구조 변경이 자동으로 적용됩니다. 백업은 데이터베이스 덤프와 데이터 묶음 두 파일로 나옵니다.</p></div>
+            <div><h3>폐쇄망 설치</h3><p>인터넷이 되는 PC 에서 설치 묶음을 파일로 만들어 옮기면, 설치할 서버는 인터넷 없이 올라옵니다.</p></div>
+            <div><h3>저장 위치 지정</h3><p>측정 데이터를 둘 위치를 설정에서 정합니다. 용량이 큰 디스크를 따로 붙여 쓸 수 있습니다.</p></div>
+            <div><h3>업데이트와 백업</h3><p>업데이트하면 데이터 구조 변경이 자동으로 적용됩니다. 백업과 복원은 스크립트 한 줄로 합니다.</p></div>
           </div>
         </div>
       </div>
@@ -690,7 +684,7 @@
         <div class="faq">
           <details open>
             <summary><h3>계측 AI 모니터링은 무엇인가요?</h3></summary>
-            <p>계측 장비가 남긴 시계열 기록을 등록하면 추이와 알람을 정리하고, 서버 안의 로컬 AI 가 머신러닝으로 이상 구간을 찾아 장비 상태를 점수로 보여주는 설치형 모니터링 시스템입니다. 서버 한 대에 Docker 로 설치합니다.</p>
+            <p>계측 장비가 남긴 시계열 기록을 등록하면 추이와 알람을 정리하고, 서버 안의 로컬 AI 가 머신러닝으로 이상 구간을 찾아 장비 상태를 점수로 보여주는 설치형 모니터링 시스템입니다. 서버 한 대에 설치합니다.</p>
           </details>
           <details>
             <summary><h3>어떤 계측 장비에 쓸 수 있나요?</h3></summary>
@@ -710,7 +704,7 @@
           </details>
           <details>
             <summary><h3>데이터가 많아져도 빠른가요?</h3></summary>
-            <p>측정 데이터를 컬럼 저장 형식(Parquet)으로 장비별·날짜별로 나눠 저장하고 DuckDB 로 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다. 시연용 데이터에서 544만 행 집계가 0.1초, 45일 추이 조회가 0.05초였습니다(12코어 PC 기준).</p>
+            <p>측정 데이터를 장비별·날짜별로 나눠 압축 저장하고 분석 전용 엔진으로 필요한 구간만 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다. 시연용 데이터에서 544만 행 집계가 0.1초, 45일 추이 조회가 0.05초였습니다(12코어 PC 기준).</p>
           </details>
           <details>
             <summary><h3>실시간으로 수집하나요?</h3></summary>
@@ -718,7 +712,7 @@
           </details>
           <details>
             <summary><h3>설치는 어떻게 하나요?</h3></summary>
-            <p>Docker 가 도는 64비트 Linux 서버에 설정 파일을 만들고 docker compose up -d --build 를 한 번 실행합니다. 인터넷이 없는 곳에는 이미지를 파일로 묶어 옮겨 설치합니다. 백업과 복원 스크립트가 함께 들어 있습니다.</p>
+            <p>리눅스 서버 한 대에 설정 파일을 만들고 설치 명령을 한 번 실행합니다. 인터넷이 없는 곳에는 설치 묶음을 파일로 옮겨 설치합니다. 백업과 복원 스크립트가 함께 들어 있습니다.</p>
           </details>
         </div>
       </div>
