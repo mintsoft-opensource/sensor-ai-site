@@ -20,4 +20,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://monitoring.mint-soft.com/sitemap.xml
+Sitemap: https://sensor-ai.mint-soft.com/sitemap.xml

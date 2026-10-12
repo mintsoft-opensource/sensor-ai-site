@@ -2,7 +2,7 @@
 
 > 계측 장비가 남긴 시계열 기록을 등록하면 추이와 알람을 정리하고, 서버 안의 로컬 AI 가 머신러닝으로 이상 구간을 찾아 장비 상태를 점수로 보여주는 설치형 모니터링 시스템. MintSoft 가 제공한다.
 
-- 소개 페이지: https://monitoring.mint-soft.com/
+- 소개 페이지: https://sensor-ai.mint-soft.com/
 - 문의: https://www.mint-soft.com/contact/
 
 ## 핵심 사실

@@ -1,6 +1,6 @@
-# monitoring-site
+# sensor-ai-site
 
-계측 AI 모니터링 소개 페이지 — https://monitoring.mint-soft.com
+계측 AI 모니터링 소개 페이지 — https://sensor-ai.mint-soft.com
 
 정적 HTML 한 벌이다. `main` 에 올리면 GitHub Pages 가 그대로 내보낸다(빌드 없음). 도메인은 `CNAME` 파일이 정한다.
 
