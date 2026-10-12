@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>계측 AI 모니터링 — 계측 데이터를 로컬 AI 로 분석하는 설치형 시스템</title>
+  <meta name="description" content="계측 장비가 남긴 시계열 기록을 등록하면 추이, 알람, 이상 구간, 건강 점수, 7일 예측을 보여주는 설치형 모니터링 시스템. 머신러닝 분석은 설치한 서버 안의 로컬 AI 가 수행하고 데이터는 밖으로 나가지 않습니다.">
+  <meta name="keywords" content="계측 모니터링, 계측 데이터 분석, 이상 탐지, 예지 보전, 로컬 AI, 온프레미스 AI, 머신러닝, 시계열 분석, 설치형 모니터링, DuckDB, 폐쇄망">
+  <meta name="author" content="MintSoft">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://monitoring.mint-soft.com/">
+  <link rel="alternate" hreflang="ko" href="https://monitoring.mint-soft.com/">
+  <link rel="alternate" type="text/plain" href="https://monitoring.mint-soft.com/llms.txt" title="LLM 용 요약">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="계측 AI 모니터링">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:url" content="https://monitoring.mint-soft.com/">
+  <meta property="og:title" content="계측 AI 모니터링 — 계측 데이터를 로컬 AI 로 분석하는 설치형 시스템">
+  <meta property="og:description" content="계측 기록을 등록하면 로컬 AI 가 이상 구간, 건강 점수, 7일 예측을 만듭니다. 서버 한 대에 Docker 로 설치합니다.">
+  <meta property="og:image" content="https://monitoring.mint-soft.com/assets/og.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="계측 AI 모니터링. 계측 데이터에서 이상 징후를 먼저. 추이 차트 화면이 함께 보인다.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="계측 AI 모니터링 — 계측 데이터를 로컬 AI 로 분석하는 설치형 시스템">
+  <meta name="twitter:description" content="계측 기록을 등록하면 로컬 AI 가 이상 구간, 건강 점수, 7일 예측을 만듭니다.">
+  <meta name="twitter:image" content="https://monitoring.mint-soft.com/assets/og.png">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://mint-soft.com/#organization",
+      "name": "MintSoft",
+      "url": "https://mint-soft.com"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://monitoring.mint-soft.com/#website",
+      "url": "https://monitoring.mint-soft.com/",
+      "name": "계측 AI 모니터링",
+      "inLanguage": "ko-KR",
+      "publisher": {
+        "@id": "https://mint-soft.com/#organization"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://monitoring.mint-soft.com/#webpage",
+      "url": "https://monitoring.mint-soft.com/",
+      "name": "계측 AI 모니터링 — 계측 데이터를 로컬 AI 로 분석하는 설치형 시스템",
+      "description": "계측 장비가 남긴 시계열 기록을 등록하면 추이, 알람, 이상 구간, 건강 점수, 7일 예측을 보여주는 설치형 모니터링 시스템. 머신러닝 분석은 설치한 서버 안의 로컬 AI 가 수행하고 데이터는 밖으로 나가지 않습니다.",
+      "inLanguage": "ko-KR",
+      "isPartOf": {
+        "@id": "https://monitoring.mint-soft.com/#website"
+      },
+      "about": {
+        "@id": "https://monitoring.mint-soft.com/#software"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://monitoring.mint-soft.com/assets/og.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://monitoring.mint-soft.com/#software",
+      "name": "계측 AI 모니터링",
+      "description": "계측 장비가 남긴 시계열 기록을 등록하면 추이, 알람, 이상 구간, 건강 점수, 7일 예측을 보여주는 설치형 모니터링 시스템. 머신러닝 분석은 설치한 서버 안의 로컬 AI 가 수행하고 데이터는 밖으로 나가지 않습니다.",
+      "url": "https://monitoring.mint-soft.com/",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "계측 장비 모니터링 · 이상 탐지",
+      "operatingSystem": "Linux (Docker)",
+      "inLanguage": "ko-KR",
+      "featureList": [
+        "현황판과 추이 차트",
+        "알람·설정 변경 이력",
+        "장비·지표·기간 비교분석",
+        "오토인코더 기반 패턴 이탈 탐지",
+        "Isolation Forest 다변량 이상 탐지",
+        "건강 점수 상태 진단",
+        "7일 예측과 모델 자동 선택",
+        "일별·주간·월별·연간 리포트 (PDF, 엑셀)",
+        "로컬 AI: 서버 안에서 머신러닝 학습과 판정",
+        "폐쇄망 설치"
+      ],
+      "screenshot": [
+        "https://monitoring.mint-soft.com/assets/overview.png",
+        "https://monitoring.mint-soft.com/assets/trend.png",
+        "https://monitoring.mint-soft.com/assets/anomalies.png",
+        "https://monitoring.mint-soft.com/assets/forecast.png"
+      ],
+      "image": "https://monitoring.mint-soft.com/assets/og.png",
+      "provider": {
+        "@id": "https://mint-soft.com/#organization"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://monitoring.mint-soft.com/#faq",
+      "inLanguage": "ko-KR",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "계측 AI 모니터링은 무엇인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "계측 장비가 남긴 시계열 기록을 등록하면 추이와 알람을 정리하고, 서버 안의 로컬 AI 가 머신러닝으로 이상 구간을 찾아 장비 상태를 점수로 보여주는 설치형 모니터링 시스템입니다. 서버 한 대에 Docker 로 설치합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "어떤 계측 장비에 쓸 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "특정 장비 전용이 아닙니다. 레벨, 유량, 압력, 온도처럼 시간에 따라 값을 남기는 계측 장비라면 기록의 각 열을 측정값, 알람, 설정값으로 정의해 등록합니다. 처음 받는 기록 형식은 필드 정의를 한 번 추가해야 합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "데이터가 외부로 나가나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "나가지 않습니다. 등록한 파일과 분석 결과는 설치한 서버의 디스크에만 저장되고, 머신러닝 학습과 판정도 그 서버 안에서 돕니다. 외부 AI 서비스나 클라우드로 데이터를 보내지 않으며 폐쇄망에서도 동작합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "어떤 AI 를 쓰나요? GPU 가 필요한가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "머신러닝 모델 세 가지를 씁니다. 패턴 이탈은 오토인코더(신경망), 다변량 이상은 Isolation Forest, 예측은 그래디언트 부스팅과 지수평활(ETS) 가운데 검증 오차가 가장 작은 모델입니다. 여기에 통계와 규칙을 함께 씁니다. 모두 서버의 CPU 로 돌고 GPU 는 필요 없습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "데이터를 얼마나 적재할 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "1초 간격으로 기록하는 장비 1대가 1년에 약 0.4GB, 약 3,150만 행을 씁니다. 1TB 디스크에 약 2,000 장비·년을 담을 수 있습니다. 시험 데이터로 잰 값에서 계산한 것이며, 값의 변동이 큰 데이터는 더 많이 씁니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "데이터가 많아져도 빠른가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "측정 데이터를 컬럼 저장 형식(Parquet)으로 장비별·날짜별로 나눠 저장하고 DuckDB 로 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다. 시연용 데이터에서 544만 행 집계가 0.1초, 45일 추이 조회가 0.05초였습니다(12코어 PC 기준)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "실시간으로 수집하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아닙니다. 장비에 직접 붙어 값을 받아 오지 않고, 장비나 수집기가 내보낸 기록 파일(csv, csv.gz)을 등록하면 자동으로 분석합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "설치는 어떻게 하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Docker 가 도는 64비트 Linux 서버에 설정 파일을 만들고 docker compose up -d --build 를 한 번 실행합니다. 인터넷이 없는 곳에는 이미지를 파일로 묶어 옮겨 설치합니다. 백업과 복원 스크립트가 함께 들어 있습니다."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <meta name="theme-color" content="#070b16">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f6fe0'/%3E%3Cpath d='M5 20c3.5-6 6-6 9.5 0s6 6 12.5-8' fill='none' stroke='%23fff' stroke-width='2.5'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070b16;
+      --bg-2: #0b1122;
+      --surface: #0f172b;
+      --raised: #152039;
+      --line: #1f2c49;
+      --line-strong: #2c3d63;
+      --ink: #eaf0fb;
+      --ink-soft: #a3b1cc;
+      --ink-faint: #6f7e9c;
+      --primary: #2f6fe0;
+      --primary-bright: #6ea8ff;
+      --primary-deep: #1b4fb3;
+      --warn: #f0b44c;
+      --body: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+      --gutter: clamp(20px, 5vw, 56px);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; color-scheme: dark; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.75; word-break: keep-all; overflow-wrap: anywhere; -webkit-font-smoothing: antialiased; }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; }
+    code { font-family: var(--mono); font-size: 0.88em; background: var(--raised); border: 1px solid var(--line); padding: 1px 6px; border-radius: 4px; color: var(--primary-bright); }
+    :focus-visible { outline: 2px solid var(--primary-bright); outline-offset: 3px; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter); }
+    .skip { position: absolute; left: -9999px; }
+    .skip:focus { left: 16px; top: 16px; z-index: 20; background: var(--primary); color: #fff; padding: 8px 14px; }
+
+    .masthead { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+    .masthead .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 62px; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; font-size: 17px; letter-spacing: -0.01em; }
+    .brand svg { flex: none; }
+    .brand span { font-family: var(--mono); font-weight: 400; font-size: 11px; color: var(--ink-faint); letter-spacing: 0.1em; }
+    .masthead nav { display: flex; align-items: center; gap: clamp(14px, 2.4vw, 30px); font-size: 14.5px; }
+    .masthead nav a { text-decoration: none; color: var(--ink-soft); }
+    .masthead nav a:hover { color: var(--ink); }
+    .masthead nav a.ask { color: #fff; background: var(--primary); padding: 8px 16px; border-radius: 8px; font-weight: 600; }
+    .masthead nav a.ask:hover { background: var(--primary-deep); }
+    @media (max-width: 760px) { .masthead nav a:not(.ask) { display: none; } }
+
+    .hero { position: relative; padding: clamp(56px, 9vw, 112px) 0 0; overflow: hidden; }
+    .hero::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(60% 55% at 78% 0%, color-mix(in srgb, var(--primary) 34%, transparent), transparent 70%),
+        radial-gradient(40% 40% at 8% 30%, color-mix(in srgb, var(--primary-deep) 26%, transparent), transparent 70%); }
+    .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 56px 56px; opacity: 0.35; mask-image: linear-gradient(to bottom, #000 0, transparent 70%); }
+    .hero .wrap { position: relative; z-index: 1; }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; padding: 0; list-style: none; }
+    .pills li { font-size: 13px; font-weight: 600; color: var(--primary-bright); border: 1px solid color-mix(in srgb, var(--primary) 60%, transparent); background: color-mix(in srgb, var(--primary) 14%, transparent); padding: 4px 12px; border-radius: 999px; }
+    h1 { font-weight: 800; font-size: clamp(38px, 6.6vw, 82px); line-height: 1.12; letter-spacing: -0.035em; margin: 0; }
+    h1 em { font-style: normal; background: linear-gradient(100deg, var(--primary-bright), #9cc4ff 60%, var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero-foot { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(24px, 5vw, 72px); align-items: end; margin-top: clamp(26px, 4vw, 44px); }
+    .lede { font-size: clamp(17px, 1.6vw, 20px); color: var(--ink-soft); margin: 0; max-width: 34em; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 24px; font-size: 15.5px; font-weight: 600; text-decoration: none; border-radius: 10px; border: 1px solid transparent; transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease; }
+    .btn.solid { background: var(--primary); color: #fff; box-shadow: 0 10px 30px -10px var(--primary); }
+    .btn.solid:hover { background: #3b7bef; transform: translateY(-2px); }
+    .btn.line { border-color: var(--line-strong); color: var(--ink); background: color-mix(in srgb, var(--surface) 70%, transparent); }
+    .btn.line:hover { border-color: var(--primary-bright); transform: translateY(-2px); }
+    .facts { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line-strong); font-size: 14.5px; }
+    .facts li { display: grid; grid-template-columns: 6.5em 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .facts span { font-family: var(--mono); font-size: 12px; color: var(--primary-bright); letter-spacing: 0.04em; padding-top: 3px; }
+    @media (max-width: 860px) { .hero-foot { grid-template-columns: 1fr; } }
+
+    .shot { margin: 0; border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; background: var(--surface); box-shadow: 0 30px 80px -40px color-mix(in srgb, var(--primary) 70%, transparent), 0 0 0 1px rgba(255, 255, 255, 0.02) inset; }
+    .shot img { width: 100%; }
+    .shot-bar { display: flex; align-items: center; gap: 7px; padding: 9px 14px; border-bottom: 1px solid var(--line); background: var(--bg-2); font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); }
+    .shot-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); }
+    .shot-bar span { margin-left: 8px; }
+    .hero-shot { margin-top: clamp(40px, 6vw, 72px); }
+    .hero-shot .shot { border-bottom: 0; border-radius: 14px 14px 0 0; box-shadow: 0 -20px 120px -30px color-mix(in srgb, var(--primary) 75%, transparent); }
+
+    section.chapter { border-top: 1px solid var(--line); padding: clamp(60px, 8vw, 108px) 0; }
+    section.chapter.tint { background: var(--bg-2); }
+    .chapter-head { max-width: 46em; margin-bottom: clamp(32px, 5vw, 56px); }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.1em; color: var(--primary-bright); margin: 0 0 14px; }
+    .eyebrow b { font-weight: 500; color: var(--ink-faint); }
+    h2 { font-weight: 800; font-size: clamp(28px, 4vw, 46px); line-height: 1.22; letter-spacing: -0.03em; margin: 0 0 14px; }
+    .chapter-head p { margin: 0; color: var(--ink-soft); }
+
+    .tabs { display: inline-flex; padding: 4px; gap: 4px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); max-width: 100%; }
+    .tabs button { font: inherit; font-size: 15px; font-weight: 600; background: transparent; color: var(--ink-soft); border: 0; border-radius: 9px; padding: 9px clamp(14px, 2.6vw, 24px); cursor: pointer; }
+    .tabs button:hover { color: var(--ink); }
+    .tabs button[aria-selected="true"] { background: var(--primary); color: #fff; }
+    .panel { display: grid; grid-template-columns: minmax(0, 0.4fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; margin-top: 32px; }
+    .panel[hidden] { display: none; }
+    .panel > div:first-child { position: sticky; top: 92px; }
+    .panel h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 4px; }
+    .panel .who { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); letter-spacing: 0.05em; margin: 0 0 18px; }
+    .panel ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line-strong); }
+    .panel li { padding: 12px 0 12px 24px; border-bottom: 1px solid var(--line); position: relative; font-size: 15.5px; color: var(--ink-soft); }
+    .panel li::before { content: ""; position: absolute; left: 2px; top: 22px; width: 8px; height: 8px; border-radius: 2px; background: var(--primary); }
+    .pair { display: grid; gap: 24px; }
+    @media (max-width: 860px) { .panel { grid-template-columns: 1fr; } .panel > div:first-child { position: static; } }
+
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 24px 24px 26px; }
+    .card .n { font-family: var(--mono); font-size: 12px; color: var(--primary-bright); }
+    .card h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 8px; }
+    .card p { margin: 0; font-size: 15.5px; color: var(--ink-soft); }
+    .card.dashed { border-style: dashed; background: transparent; }
+    @media (max-width: 900px) { .cards, .cards.two { grid-template-columns: 1fr; } }
+
+    .fits { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 0; padding: 0; list-style: none; }
+    .fits li { font-size: 14px; color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px 14px; }
+    .fits li.more { border-style: dashed; color: var(--ink-faint); }
+
+    .local { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 56px); align-items: center; border: 1px solid color-mix(in srgb, var(--primary) 55%, var(--line)); border-radius: 16px; padding: clamp(24px, 4vw, 40px); margin-bottom: clamp(32px, 5vw, 56px);
+      background: radial-gradient(80% 120% at 0% 0%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 70%), var(--surface); }
+    .local h3 { font-size: clamp(22px, 2.6vw, 30px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.3; margin: 10px 0 12px; }
+    .local p { margin: 0; color: var(--ink-soft); font-size: 16px; }
+    .badge { display: inline-block; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; color: #fff; background: var(--primary); padding: 3px 10px; border-radius: 6px; }
+    .flow { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 10px; }
+    .flow li { counter-increment: step; display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; background: color-mix(in srgb, var(--bg) 60%, transparent); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; font-size: 15px; color: var(--ink-soft); }
+    .flow li::before { content: counter(step); font-family: var(--mono); font-size: 13px; color: var(--primary-bright); border: 1px solid var(--line-strong); border-radius: 6px; width: 28px; height: 28px; display: grid; place-items: center; margin-top: 1px; }
+    .flow b { color: var(--ink); font-weight: 600; }
+    @media (max-width: 860px) { .local { grid-template-columns: 1fr; } }
+
+    table { width: 100%; border-collapse: collapse; font-size: 15.5px; }
+    caption { text-align: left; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; color: var(--ink-faint); padding-bottom: 10px; }
+    th, td { text-align: left; padding: 13px 14px 13px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+    thead th { border-bottom: 1px solid var(--line-strong); font-weight: 600; font-size: 13px; color: var(--ink-faint); }
+    td { color: var(--ink-soft); }
+    .methods tbody th { width: 8.5em; font-size: 17px; font-weight: 700; color: var(--ink); }
+    .methods td.how { width: 15em; font-family: var(--mono); font-size: 13.5px; color: var(--primary-bright); }
+    .methods td.kind { width: 9em; white-space: nowrap; }
+    .tag { display: inline-block; border: 1px solid var(--line-strong); border-radius: 6px; padding: 0 8px; font-size: 12.5px; color: var(--ink-soft); }
+    .tag.ml { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 20%, transparent); color: var(--primary-bright); font-weight: 600; }
+    @media (max-width: 860px) {
+      .methods thead { display: none; }
+      .methods tr { display: block; padding: 14px 0; border-bottom: 1px solid var(--line); }
+      .methods th, .methods td, .methods tbody th, .methods td.how, .methods td.kind { display: block; width: auto; border: 0; padding: 2px 0; }
+    }
+    .note { font-size: 14px; color: var(--ink-faint); margin: 16px 0 0; }
+    .after-table { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 32px); margin-top: clamp(32px, 5vw, 56px); }
+    .after-table p { font-size: 14.5px; color: var(--ink-soft); margin: 14px 0 0; }
+    @media (max-width: 860px) { .after-table { grid-template-columns: 1fr; } }
+
+
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .stat { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 22px 22px 24px; }
+    .stat .k { margin: 0; font-size: 14px; color: var(--ink-soft); }
+    .stat .v { margin: 6px 0 8px; font-size: clamp(38px, 4.4vw, 54px); font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--primary-bright); font-variant-numeric: tabular-nums; }
+    .stat .v small { font-size: 0.38em; font-weight: 600; letter-spacing: 0; margin-left: 4px; color: var(--ink-soft); }
+    .stat .d { margin: 0; font-size: 14px; color: var(--ink-faint); line-height: 1.6; }
+    @media (max-width: 900px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 480px) { .stats { grid-template-columns: 1fr; } }
+    .capacity { margin-top: clamp(28px, 4vw, 44px); border-top: 1px solid var(--line-strong); }
+    .capacity caption { padding-bottom: 12px; }
+    .capacity th { width: 11em; font-weight: 600; color: var(--ink); }
+    .install { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+    .term { background: #050810; border: 1px solid var(--line-strong); border-radius: 14px; color: #d6e0f5; font-family: var(--mono); font-size: 14px; line-height: 1.9; padding: 22px 24px 26px; overflow-x: auto; box-shadow: 0 30px 80px -50px var(--primary); }
+    .term .c { color: #62708d; }
+    .term .p { color: var(--primary-bright); user-select: none; }
+    .term pre { margin: 0; font: inherit; white-space: pre; }
+    .modes { border-top: 1px solid var(--line-strong); }
+    .modes > div { padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .modes h3 { font-size: 17px; font-weight: 700; margin: 0 0 4px; }
+    .modes p { margin: 0; font-size: 15.5px; color: var(--ink-soft); }
+    .spec { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); }
+    @media (max-width: 860px) { .install, .spec { grid-template-columns: 1fr; } }
+
+
+    .faq { border-top: 1px solid var(--line-strong); max-width: 860px; }
+    .faq details { border-bottom: 1px solid var(--line); }
+    .faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 0; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; font-family: var(--mono); font-size: 22px; color: var(--primary-bright); flex: none; }
+    .faq details[open] summary::after { content: "−"; }
+    .faq h3 { margin: 0; font-size: 18.5px; font-weight: 700; letter-spacing: -0.015em; }
+    .faq p { margin: 0; padding: 0 40px 22px 0; color: var(--ink-soft); font-size: 16px; }
+    .ask-block { border-top: 1px solid var(--line); padding: clamp(60px, 8vw, 104px) 0; background: radial-gradient(60% 140% at 50% 120%, color-mix(in srgb, var(--primary) 45%, transparent), transparent 70%), var(--bg-2); }
+    .ask-block .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end; }
+    .ask-block h2 { margin: 0 0 12px; }
+    .ask-block p { margin: 0; color: var(--ink-soft); max-width: 34em; }
+    @media (max-width: 720px) { .ask-block .wrap { grid-template-columns: 1fr; } }
+    footer { border-top: 1px solid var(--line); color: var(--ink-faint); font-size: 13px; padding: 22px 0 30px; }
+    footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+    footer a { color: var(--ink-soft); }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .rise { opacity: 0; transform: translateY(18px); animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; animation-delay: var(--d, 0s); }
+      @keyframes rise { to { opacity: 1; transform: none; } }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 건너뛰기</a>
+
+  <header class="masthead">
+    <div class="wrap">
+      <a class="brand" href="#top" aria-label="계측 AI 모니터링 처음으로"><svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2f6fe0"/><path d="M5 20c3.5-6 6-6 9.5 0s6 6 12.5-8" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>계측 AI 모니터링<span>MINTSOFT</span></a>
+      <nav aria-label="주요 메뉴">
+        <a href="#screens">화면</a>
+        <a href="#general">범용</a>
+        <a href="#ai">로컬 AI</a>
+        <a href="#scale">속도 · 용량</a>
+        <a href="#install">설치</a>
+        <a href="#faq">FAQ</a>
+        <a class="ask" href="#ask">도입 문의</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero" id="top">
+      <div class="wrap">
+        <ul class="pills rise">
+          <li>설치형</li>
+          <li>로컬 AI · 머신러닝</li>
+          <li>계측 장비 범용</li>
+        </ul>
+        <h1 class="rise" style="--d: 0.08s">계측 데이터에서,<br><em>이상 징후</em>를 먼저.</h1>
+        <div class="hero-foot">
+          <div class="rise" style="--d: 0.18s">
+            <p class="lede">계측 장비가 남긴 기록을 올리면 추이와 알람을 정리하고, 서버 안의 로컬 AI 가 머신러닝으로 평소와 다른 구간을 찾아 장비 상태를 점수로 보여줍니다. 데이터는 설치한 서버 밖으로 나가지 않습니다.</p>
+            <div class="actions">
+              <a class="btn solid" href="#ask">도입 문의</a>
+              <a class="btn line" href="#screens">화면 보기</a>
+            </div>
+          </div>
+          <ul class="facts rise" style="--d: 0.28s">
+            <li><span>모니터링</span>현황판 · 추이 · 알람 · 장비 비교</li>
+            <li><span>로컬 AI</span>이상 탐지 · 상태 진단 · 7일 예측</li>
+            <li><span>대상</span>시계열 기록을 남기는 계측 장비</li>
+            <li><span>속도</span>DuckDB 로 544만 행 집계 0.1초</li>
+            <li><span>설치</span>Docker 로 서버 한 대, GPU 불필요</li>
+          </ul>
+        </div>
+        <div class="hero-shot rise" style="--d: 0.38s">
+          <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>장비 상세 — 개요</span></div>
+              <img src="assets/overview.png" width="1600" height="903" fetchpriority="high" alt="장비 개요 화면. 건강 점수 98점, 이상 구간 27건, 등록된 데이터 45일과 함께 AI 진단 요약, 먼저 확인할 것, 탐지 방식별 결과가 보인다.">
+            </figure>
+        </div>
+      </div>
+    </div>
+
+    <section class="chapter" id="screens">
+      <div class="wrap">
+        <div class="chapter-head">
+          <p class="eyebrow"><b>01</b>화면</p>
+          <h2>전체 현황에서 장비 한 대까지,<br>같은 화면에서 내려갑니다</h2>
+          <p>아래 화면은 시연용으로 만든 데이터(사업소 3곳, 계측기 7대, 45일치)로 찍은 실제 제품입니다. 밝은 테마와 어두운 테마를 모두 지원합니다.</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="화면 선택">
+          <button role="tab" id="tab-monitor" aria-controls="panel-monitor" aria-selected="true">모니터링</button>
+          <button role="tab" id="tab-ai" aria-controls="panel-ai" aria-selected="false" tabindex="-1">AI 분석</button>
+          <button role="tab" id="tab-report" aria-controls="panel-report" aria-selected="false" tabindex="-1">리포트</button>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-monitor" aria-labelledby="tab-monitor">
+          <div>
+            <h3>모니터링</h3>
+            <p class="who">현장 · 설비 담당자</p>
+            <ul>
+              <li>현황판: 점검이 필요한 장비와 최근 알람·이상</li>
+              <li>추이 차트에 알람 구간과 이상 구간을 띠로 표시</li>
+              <li>장비끼리 같은 지표를 나란히 놓고 유독 다른 값 찾기</li>
+              <li>초 단위 원본, 날짜별 달력, CSV 내보내기</li>
+            </ul>
+          </div>
+          <div class="pair">
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>추이 차트</span></div>
+              <img src="assets/trend.png" width="1600" height="903" loading="lazy" alt="추이 차트 화면. 최근 7일 측정값 그래프에 이상 구간이 주황 띠로 표시되고 최소, 평균, 최대가 위에 나온다.">
+            </figure>
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>대시보드</span></div>
+              <img src="assets/dashboard.png" width="1600" height="903" loading="lazy" alt="대시보드 화면. 사업소 3곳과 장비 7대, 탐지된 이상 구간 수, 최근 알람과 이상 목록, 장비 상태 분포가 보인다.">
+            </figure>
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>장비 비교</span></div>
+              <img src="assets/compare.png" width="1600" height="903" loading="lazy" alt="장비 비교 화면. 장비 7대의 평균 측정값, 변동성, 하루 주기, 알람 비율, 건강 점수가 표로 나오고 다른 장비와 다른 값에 표시가 붙는다.">
+            </figure>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-ai" aria-labelledby="tab-ai" hidden>
+          <div>
+            <h3>AI 분석</h3>
+            <p class="who">파일을 등록하면 자동으로 실행</p>
+            <ul>
+              <li>진단 요약: 가장 나빴던 날과 먼저 확인할 것</li>
+              <li>이상 구간마다 유형, 판정 방식, 강도를 표시</li>
+              <li>앞으로 7일 예측과 모델별 검증 오차</li>
+              <li>필드마다 따로 학습하고 결과도 필드별로</li>
+            </ul>
+          </div>
+          <div class="pair">
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>이상 탐지</span></div>
+              <img src="assets/anomalies.png" width="1600" height="903" loading="lazy" alt="이상 탐지 화면. 패턴 이탈과 급변 건수가 유형별 카드로 나오고 이상 구간 목록에 판정 방식과 강도가 표시된다.">
+            </figure>
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>상태 진단</span></div>
+              <img src="assets/health.png" width="1600" height="903" loading="lazy" alt="상태 진단 화면. 건강 점수와 함께 가장 나빴던 날, 이상이 나온 필드, 먼저 확인할 것, 탐지 방식별 결과가 정리되어 있다.">
+            </figure>
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>예측</span></div>
+              <img src="assets/forecast.png" width="1600" height="903" loading="lazy" alt="예측 화면. 최근 7일 실측과 앞으로 7일 예측이 한 차트에 이어지고 예측 범위가 옅은 띠로 표시된다.">
+            </figure>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-report" aria-labelledby="tab-report" hidden>
+          <div>
+            <h3>리포트</h3>
+            <p class="who">보고 · 기록용</p>
+            <ul>
+              <li>일별, 주간, 월별, 연간, 전체 기간</li>
+              <li>이전 기간과 비교한 점수와 이상 건수</li>
+              <li>화면에서 미리 본 그대로 PDF 로 내려받기</li>
+              <li>엑셀: 요약, 일자별, 이상 구간 시트</li>
+            </ul>
+          </div>
+          <div class="pair">
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>주간 리포트</span></div>
+              <img src="assets/weekly.png" width="1600" height="903" loading="lazy" alt="주간 리포트 화면. 건강 점수, 이상 구간, 수집률, 알람 요약과 측정값 추이 차트가 보인다.">
+            </figure>
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>PDF 미리보기</span></div>
+              <img src="assets/pdf.png" width="1600" height="903" loading="lazy" alt="PDF 미리보기 창. 주간 리포트가 종이 모양으로 미리 보이고 다운로드 버튼이 있다.">
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter tint" id="general">
+      <div class="wrap">
+        <div class="chapter-head">
+          <p class="eyebrow"><b>02</b>범용</p>
+          <h2>특정 장비 전용이 아닙니다</h2>
+          <p>시간에 따라 값을 남기는 계측 장비라면 종류에 상관없이 같은 화면과 같은 분석을 씁니다. 장비의 종류는 프로그램에 박혀 있지 않고, 필드 정의로 알려 줍니다.</p>
+        </div>
+        <div class="cards">
+          <div class="card"><span class="n">01</span><h3>필드 정의로 장비를 등록</h3><p>기록의 각 열을 측정값, 알람, 설정값 세 가지로 나눠 정의합니다. 표시 이름, 단위, 배율은 화면에서 바꿉니다.</p></div>
+          <div class="card"><span class="n">02</span><h3>정상 패턴은 데이터에서 학습</h3><p>장비별 판정 규칙을 미리 짜 넣지 않습니다. 그 장비의 기록에서 평소 모양을 배우므로, 측정 대상이 달라져도 같은 방식으로 분석합니다.</p></div>
+          <div class="card"><span class="n">03</span><h3>여러 종류를 한 시스템에서</h3><p>제품 유형을 여러 개 두고 종류가 다른 장비를 함께 관리합니다. 장비끼리의 비교는 같은 종류 안에서만 합니다.</p></div>
+        </div>
+        <ul class="fits" aria-label="쓸 수 있는 측정 예시">
+          <li>레벨</li><li>유량</li><li>압력</li><li>온도</li><li>농도</li><li>전류 · 출력</li><li class="more">그 밖의 시계열 측정값</li>
+        </ul>
+        <p class="note">처음 받는 기록 형식은 필드 정의를 한 번 추가해야 합니다. 입력은 장비·수집기가 내보낸 <code>csv</code>, <code>csv.gz</code> 파일입니다.</p>
+      </div>
+    </section>
+
+    <section class="chapter" id="monitoring">
+      <div class="wrap">
+        <div class="chapter-head">
+          <p class="eyebrow"><b>03</b>모니터링</p>
+          <h2>기록을 올리면 정리되는 것</h2>
+          <p>장비에서 받은 기록 파일을 장비별로 등록하는 방식입니다. 현장 하나에 장비를 여러 대 둘 수 있습니다.</p>
+        </div>
+        <div class="cards">
+          <div class="card"><h3>현황판</h3><p>주의·점검이 필요한 장비 수, 전체 장비의 상태 분포, 가장 최근에 일어난 알람과 이상을 한 화면에 모읍니다.</p></div>
+          <div class="card"><h3>추이와 원본</h3><p>기간을 골라 지표별 추이를 보고, 알람 구간과 이상 구간을 차트 위에 겹칩니다. 필요하면 초 단위 원본까지 내려갑니다.</p></div>
+          <div class="card"><h3>알람과 설정 변경</h3><p>알람이 켜져 있던 구간과 장비 설정값이 바뀐 시점을 기록에서 뽑아 한 목록으로 보여줍니다. 엑셀로 내려받을 수 있습니다.</p></div>
+          <div class="card"><h3>비교분석</h3><p>장비 사이, 지표 사이, 기간 사이를 비교합니다. 다른 장비들과 유독 다른 값을 표시합니다.</p></div>
+          <div class="card"><h3>리포트</h3><p>장비마다 일별·주간·월별·연간·전체 기간 리포트가 만들어지고, PDF 와 엑셀로 내려받습니다.</p></div>
+          <div class="card"><h3>계정과 권한</h3><p>최고 관리자, 관리자, 조회 전용 세 단계입니다. 조회 전용 계정에는 등록·수정·삭제가 보이지 않습니다.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter tint" id="ai">
+      <div class="wrap">
+        <div class="chapter-head">
+          <p class="eyebrow"><b>04</b>AI 분석</p>
+          <h2>로컬 AI 가 서버 안에서<br>머신러닝을 수행합니다</h2>
+          <p>학습과 판정이 모두 설치한 서버에서 돕니다. 이상 구간마다 어느 방식이 잡았는지 화면에 적으므로, 결과를 보고 이유를 따라갈 수 있습니다.</p>
+        </div>
+
+        <div class="local">
+          <div>
+            <span class="badge">LOCAL AI</span>
+            <h3>외부 AI 서비스 없이,<br>내 서버에서 학습하고 판정합니다</h3>
+            <p>기록을 클라우드나 외부 AI 서비스로 보내지 않습니다. 머신러닝 모델은 서버의 CPU 로 학습하며 GPU 가 필요 없고, 인터넷이 끊긴 폐쇄망에서도 그대로 동작합니다.</p>
+          </div>
+          <ol class="flow">
+            <li><span><b>기록 등록</b> — 장비별로 파일을 올리면 분석이 자동으로 시작됩니다.</span></li>
+            <li><span><b>머신러닝 학습</b> — 그 장비의 최근 기록으로, 측정 필드마다 따로 학습합니다.</span></li>
+            <li><span><b>판정과 예측</b> — 평소와 다른 구간을 찾고 앞으로 7일을 예측합니다.</span></li>
+            <li><span><b>결과 표시</b> — 건강 점수, 이상 구간, 판정 방식을 화면과 리포트에 남깁니다.</span></li>
+          </ol>
+        </div>
+
+        <table class="methods">
+          <thead><tr><th scope="col">분석</th><th scope="col">방식</th><th scope="col">구분</th><th scope="col">찾는 것</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">패턴 이탈</th><td class="how">오토인코더(신경망) + 시각대 기준선</td><td class="kind"><span class="tag ml">머신러닝</span></td><td>정상적인 하루 모양을 학습해 두고, 평소 모양이나 평소 시각의 값에서 벗어난 구간</td></tr>
+            <tr><th scope="row">다변량 이상</th><td class="how">Isolation Forest</td><td class="kind"><span class="tag ml">머신러닝</span></td><td>지표 하나하나는 정상 범위인데 조합이 평소와 다른 시점</td></tr>
+            <tr><th scope="row">예측</th><td class="how">그래디언트 부스팅 · 지수평활(ETS) · 전주/전일 반복</td><td class="kind"><span class="tag ml">머신러닝</span> <span class="tag">통계</span></td><td>앞으로 7일. 최근 72시간을 가려 두고 맞혀 보게 해서 오차가 가장 작은 모델을 고릅니다</td></tr>
+            <tr><th scope="row">급변</th><td class="how">중앙값 기준 편차</td><td class="kind"><span class="tag">통계</span></td><td>1분 사이에 값이 평소 변화폭보다 크게 바뀐 순간</td></tr>
+            <tr><th scope="row">값 고정 · 공백</th><td class="how">규칙</td><td class="kind"><span class="tag">규칙</span></td><td>값이 오래 그대로인 구간(센서 멈춤 의심)과 측정이 끊긴 구간</td></tr>
+            <tr><th scope="row">상태 진단</th><td class="how">감점 방식 일일 점수</td><td class="kind"><span class="tag">규칙</span></td><td>알람, 데이터 누락, 값 고정, 이상 구간, 노이즈 증가를 감점한 100점 만점의 건강 점수</td></tr>
+            <tr><th scope="row">장비 비교</th><td class="how">중앙값 기준 이탈</td><td class="kind"><span class="tag">통계</span></td><td>같은 종류의 장비들 가운데 지표가 유독 다른 장비</td></tr>
+          </tbody>
+        </table>
+        <p class="note">머신러닝 모델 세 가지에 통계와 규칙을 함께 씁니다. 판정 기준값은 화면에서 조정할 수 있고, 현장 데이터에 맞춰 조정하는 것을 전제로 합니다.</p>
+
+        <div class="after-table">
+          <div>
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>필드별 분석</span></div>
+              <img src="assets/fields.png" width="1600" height="903" loading="lazy" alt="필드별 분석 화면. 측정값 필드마다 머신러닝 적용 여부와 적용한 방식, 이상 구간 수, 예측 신뢰도가 표로 나온다.">
+            </figure>
+            <p>필드마다 머신러닝을 적용했는지, 어떤 방식을 썼는지, 적용하지 않았다면 왜인지 보여줍니다.</p>
+          </div>
+          <div>
+            <figure class="shot">
+              <div class="shot-bar"><i></i><i></i><i></i><span>모델 성능</span></div>
+              <img src="assets/models.png" width="1600" height="903" loading="lazy" alt="모델 성능 화면. 이상 유형마다 판정 방식과 머신러닝 여부, 전체 장비의 건수가 표로 나온다.">
+            </figure>
+            <p>이상 유형마다 어떤 방식이 판정했는지, 전체 장비에서 몇 건인지 모아 봅니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter" id="scale">
+      <div class="wrap">
+        <div class="chapter-head">
+          <p class="eyebrow"><b>05</b>속도와 용량</p>
+          <h2>데이터가 쌓여도<br>조회는 빠르게 유지됩니다</h2>
+          <p>측정 데이터는 컬럼 저장 형식(Parquet)으로 쌓고 분석용 엔진 DuckDB 로 읽습니다. 필요한 열과 필요한 날짜만 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다.</p>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><p class="k">45일 추이 조회</p><p class="v">0.05<small>초</small></p><p class="d">장비 1대의 45일치 추이 차트를 여는 데 걸린 시간</p></div>
+          <div class="stat"><p class="k">544만 행 집계</p><p class="v">0.1<small>초</small></p><p class="d">초 단위 원본 전체를 DuckDB 로 한 번에 훑어 집계</p></div>
+          <div class="stat"><p class="k">78만 행 적재</p><p class="v">8<small>초</small></p><p class="d">45일치 기록 파일 하나를 올려 저장과 집계까지 마침</p></div>
+          <div class="stat"><p class="k">AI 분석</p><p class="v">16<small>초</small></p><p class="d">장비 1대의 45일치를 학습하고 판정·예측까지 (중앙값)</p></div>
+        </div>
+        <p class="note">시연용 데이터(장비 7대, 45일, 5초 간격, 544만 행)를 12코어 PC 에서 잰 값입니다. 서버 사양과 데이터에 따라 달라집니다.</p>
+
+        <div class="cards two" style="margin-top: clamp(32px, 5vw, 56px)">
+          <div class="card">
+            <span class="n">DuckDB + Parquet</span>
+            <h3>빠른 속도를 유지하는 방법</h3>
+            <p>기록을 장비별·날짜별로 나눠 압축 저장하고, 조회할 때는 해당 구간의 파일만 읽습니다. 등록할 때 1분 단위 집계를 미리 만들어 두어, 긴 기간의 추이도 원본을 다시 훑지 않고 그립니다.</p>
+          </div>
+          <div class="card">
+            <span class="n">적재 용량</span>
+            <h3>1TB 에 약 2,000 장비·년</h3>
+            <p>1초 간격으로 기록하는 장비 1대가 1년에 약 0.4GB 를 씁니다. 1TB 디스크면 장비 200대의 10년치, 4TB 면 800대의 10년치를 담습니다. 기록 간격이 길면 그만큼 더 들어갑니다.</p>
+          </div>
+        </div>
+
+        <table class="capacity">
+          <caption>적재와 분석 범위</caption>
+          <tbody>
+            <tr><th scope="row">장비 1대 · 1년</th><td>약 3,150만 행 (1초 간격), 약 0.4GB</td></tr>
+            <tr><th scope="row">디스크 1TB</th><td>약 2,000 장비·년, 약 600억 행</td></tr>
+            <tr><th scope="row">파일 하나</th><td>최대 2GB (압축 파일 기준, 설정으로 조정)</td></tr>
+            <tr><th scope="row">AI 분석 기간</th><td>최근 120일을 학습 (최대 400일까지 조정)</td></tr>
+            <tr><th scope="row">예측</th><td>앞으로 7일 (끊기지 않은 14일 이상의 기록이 있을 때)</td></tr>
+          </tbody>
+        </table>
+        <p class="note">용량은 시험 데이터로 잰 값에서 계산했습니다. 올린 원본 파일을 함께 보관하는 기준이며, 값의 변동이 큰 데이터는 더 많이 씁니다.</p>
+      </div>
+    </section>
+
+    <section class="chapter tint" id="install">
+      <div class="wrap">
+        <div class="chapter-head">
+          <p class="eyebrow"><b>06</b>설치와 운영</p>
+          <h2>서버 한 대, 명령 한 번</h2>
+          <p>Docker 가 도는 64비트 Linux 서버에 설치합니다.</p>
+        </div>
+        <div class="install">
+          <div class="term" aria-label="설치 명령 예시">
+<pre><span class="c"># 1. 설정 파일을 만들고 비밀번호와 데이터 폴더를 적는다</span>
+<span class="p">$</span> cp .env.example .env
+
+<span class="c"># 2. 전체 스택 설치와 기동</span>
+<span class="p">$</span> docker compose up -d --build
+
+<span class="c"># 평소 운영</span>
+<span class="p">$</span> scripts/backup.sh /mnt/backup
+<span class="p">$</span> scripts/restore.sh &lt;db dump&gt; &lt;data tar.gz&gt;
+<span class="p">$</span> docker compose up -d --build   <span class="c"># 업데이트</span></pre>
+          </div>
+          <div class="modes">
+            <div><h3>데이터는 서버 안에만</h3><p>등록한 파일과 분석 결과는 설치한 서버의 디스크에 저장됩니다.</p></div>
+            <div><h3>폐쇄망 설치</h3><p>인터넷이 되는 PC 에서 이미지를 파일로 묶어 옮기면, 설치할 서버는 인터넷 없이 올라옵니다.</p></div>
+            <div><h3>저장 위치 지정</h3><p>측정 데이터와 데이터베이스를 둘 폴더를 <code>.env</code> 에서 정합니다. 용량이 큰 디스크를 따로 붙여 쓸 수 있습니다.</p></div>
+            <div><h3>업데이트와 백업</h3><p>업데이트하면 데이터베이스 구조 변경이 자동으로 적용됩니다. 백업은 데이터베이스 덤프와 데이터 묶음 두 파일로 나옵니다.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter" id="faq">
+      <div class="wrap">
+        <div class="chapter-head">
+          <p class="eyebrow"><b>07</b>자주 묻는 질문</p>
+          <h2>도입 전에 많이 묻는 것</h2>
+        </div>
+        <div class="faq">
+          <details open>
+            <summary><h3>계측 AI 모니터링은 무엇인가요?</h3></summary>
+            <p>계측 장비가 남긴 시계열 기록을 등록하면 추이와 알람을 정리하고, 서버 안의 로컬 AI 가 머신러닝으로 이상 구간을 찾아 장비 상태를 점수로 보여주는 설치형 모니터링 시스템입니다. 서버 한 대에 Docker 로 설치합니다.</p>
+          </details>
+          <details>
+            <summary><h3>어떤 계측 장비에 쓸 수 있나요?</h3></summary>
+            <p>특정 장비 전용이 아닙니다. 레벨, 유량, 압력, 온도처럼 시간에 따라 값을 남기는 계측 장비라면 기록의 각 열을 측정값, 알람, 설정값으로 정의해 등록합니다. 처음 받는 기록 형식은 필드 정의를 한 번 추가해야 합니다.</p>
+          </details>
+          <details>
+            <summary><h3>데이터가 외부로 나가나요?</h3></summary>
+            <p>나가지 않습니다. 등록한 파일과 분석 결과는 설치한 서버의 디스크에만 저장되고, 머신러닝 학습과 판정도 그 서버 안에서 돕니다. 외부 AI 서비스나 클라우드로 데이터를 보내지 않으며 폐쇄망에서도 동작합니다.</p>
+          </details>
+          <details>
+            <summary><h3>어떤 AI 를 쓰나요? GPU 가 필요한가요?</h3></summary>
+            <p>머신러닝 모델 세 가지를 씁니다. 패턴 이탈은 오토인코더(신경망), 다변량 이상은 Isolation Forest, 예측은 그래디언트 부스팅과 지수평활(ETS) 가운데 검증 오차가 가장 작은 모델입니다. 여기에 통계와 규칙을 함께 씁니다. 모두 서버의 CPU 로 돌고 GPU 는 필요 없습니다.</p>
+          </details>
+          <details>
+            <summary><h3>데이터를 얼마나 적재할 수 있나요?</h3></summary>
+            <p>1초 간격으로 기록하는 장비 1대가 1년에 약 0.4GB, 약 3,150만 행을 씁니다. 1TB 디스크에 약 2,000 장비·년을 담을 수 있습니다. 시험 데이터로 잰 값에서 계산한 것이며, 값의 변동이 큰 데이터는 더 많이 씁니다.</p>
+          </details>
+          <details>
+            <summary><h3>데이터가 많아져도 빠른가요?</h3></summary>
+            <p>측정 데이터를 컬럼 저장 형식(Parquet)으로 장비별·날짜별로 나눠 저장하고 DuckDB 로 읽기 때문에, 조회 시간은 쌓인 전체 양이 아니라 보려는 구간의 크기로 정해집니다. 시연용 데이터에서 544만 행 집계가 0.1초, 45일 추이 조회가 0.05초였습니다(12코어 PC 기준).</p>
+          </details>
+          <details>
+            <summary><h3>실시간으로 수집하나요?</h3></summary>
+            <p>아닙니다. 장비에 직접 붙어 값을 받아 오지 않고, 장비나 수집기가 내보낸 기록 파일(csv, csv.gz)을 등록하면 자동으로 분석합니다.</p>
+          </details>
+          <details>
+            <summary><h3>설치는 어떻게 하나요?</h3></summary>
+            <p>Docker 가 도는 64비트 Linux 서버에 설정 파일을 만들고 docker compose up -d --build 를 한 번 실행합니다. 인터넷이 없는 곳에는 이미지를 파일로 묶어 옮겨 설치합니다. 백업과 복원 스크립트가 함께 들어 있습니다.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <div class="ask-block" id="ask">
+      <div class="wrap">
+        <div>
+          <h2>도입을 검토 중이신가요</h2>
+          <p>장비 종류와 기록 파일 형식을 알려 주시면 시연과 설치 안내를 보내 드립니다.</p>
+        </div>
+        <a class="btn solid" href="https://www.mint-soft.com/contact/">MintSoft 에 문의하기</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© MintSoft</span>
+      <span>계측 AI 모니터링 · <a href="https://mint-soft.com">mint-soft.com</a></span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+      function select(tab) {
+        tabs.forEach(function (t) {
+          var on = t === tab;
+          t.setAttribute("aria-selected", on ? "true" : "false");
+          t.tabIndex = on ? 0 : -1;
+          document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+        });
+      }
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener("click", function () { select(tab); });
+        tab.addEventListener("keydown", function (e) {
+          var step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+          if (!step) return;
+          var next = tabs[(i + step + tabs.length) % tabs.length];
+          select(next);
+          next.focus();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
